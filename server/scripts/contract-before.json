@@ -1,0 +1,231 @@
+{
+  "endpoints": {
+    "GET /": {
+      "status": 200,
+      "contentType": "application/json",
+      "hasRateLimit": false
+    },
+    "GET /api/v1/health/full": {
+      "status": 401,
+      "contentType": "application/json",
+      "hasRateLimit": false
+    },
+    "GET /api/v1/health": {
+      "status": 401,
+      "contentType": "application/json",
+      "hasRateLimit": false
+    },
+    "POST /api/v1/auth/signup": {
+      "status": 400,
+      "contentType": "application/json",
+      "hasRateLimit": false
+    },
+    "POST /api/v1/auth/login": {
+      "status": 400,
+      "contentType": "application/json",
+      "hasRateLimit": false
+    },
+    "POST /api/v1/auth/refresh": {
+      "status": 401,
+      "contentType": "application/json",
+      "hasRateLimit": false
+    },
+    "POST /api/v1/auth/logout": {
+      "status": 204,
+      "contentType": null,
+      "hasRateLimit": false
+    },
+    "POST /api/v1/auth/mobile/signup": {
+      "status": 400,
+      "contentType": "application/json",
+      "hasRateLimit": false
+    },
+    "POST /api/v1/auth/mobile/login": {
+      "status": 400,
+      "contentType": "application/json",
+      "hasRateLimit": false
+    },
+    "POST /api/v1/auth/mobile/refresh": {
+      "status": 401,
+      "contentType": "application/json",
+      "hasRateLimit": false
+    },
+    "POST /api/v1/auth/mobile/logout": {
+      "status": 204,
+      "contentType": null,
+      "hasRateLimit": false
+    },
+    "GET /api/v1/auth/me": {
+      "status": 401,
+      "contentType": "application/json",
+      "hasRateLimit": false
+    },
+    "GET /api/v1/connections/credentials": {
+      "status": 401,
+      "contentType": "application/json",
+      "hasRateLimit": false
+    },
+    "PUT /api/v1/connections/credentials": {
+      "status": 401,
+      "contentType": "application/json",
+      "hasRateLimit": false
+    },
+    "DELETE /api/v1/connections/credentials/mycamu": {
+      "status": 401,
+      "contentType": "application/json",
+      "hasRateLimit": false
+    },
+    "DELETE /api/v1/connections/credentials/invalid": {
+      "status": 401,
+      "contentType": "application/json",
+      "hasRateLimit": false
+    },
+    "GET /api/v1/email/connect/gmail": {
+      "status": 401,
+      "contentType": "application/json",
+      "hasRateLimit": false
+    },
+    "GET /api/v1/email/connect/outlook": {
+      "status": 401,
+      "contentType": "application/json",
+      "hasRateLimit": false
+    },
+    "GET /api/v1/email/connect/invalid": {
+      "status": 401,
+      "contentType": "application/json",
+      "hasRateLimit": false
+    },
+    "GET /api/v1/email/oauth/gmail/callback": {
+      "error": "fetch failed"
+    },
+    "GET /api/v1/email/oauth/outlook/callback": {
+      "error": "fetch failed"
+    },
+    "GET /api/v1/email/accounts": {
+      "status": 401,
+      "contentType": "application/json",
+      "hasRateLimit": false
+    },
+    "DELETE /api/v1/email/accounts/gmail": {
+      "status": 401,
+      "contentType": "application/json",
+      "hasRateLimit": false
+    },
+    "DELETE /api/v1/email/accounts/invalid": {
+      "status": 401,
+      "contentType": "application/json",
+      "hasRateLimit": false
+    },
+    "POST /api/v1/email/sync/gmail": {
+      "status": 401,
+      "contentType": "application/json",
+      "hasRateLimit": false
+    },
+    "POST /api/v1/email/sync/invalid": {
+      "status": 401,
+      "contentType": "application/json",
+      "hasRateLimit": false
+    },
+    "GET /api/v1/email/messages": {
+      "status": 401,
+      "contentType": "application/json",
+      "hasRateLimit": false
+    },
+    "GET /api/v1/lms/status": {
+      "status": 401,
+      "contentType": "application/json",
+      "hasRateLimit": false
+    },
+    "POST /api/v1/lms/connect": {
+      "status": 401,
+      "contentType": "application/json",
+      "hasRateLimit": false
+    },
+    "POST /api/v1/lms/sync": {
+      "status": 401,
+      "contentType": "application/json",
+      "hasRateLimit": false
+    },
+    "GET /api/v1/lms/items": {
+      "status": 401,
+      "contentType": "application/json",
+      "hasRateLimit": false
+    },
+    "DELETE /api/v1/lms/disconnect": {
+      "status": 401,
+      "contentType": "application/json",
+      "hasRateLimit": false
+    },
+    "GET /api/v1/chat/sessions": {
+      "status": 401,
+      "contentType": "application/json",
+      "hasRateLimit": false
+    },
+    "POST /api/v1/chat/sessions": {
+      "status": 401,
+      "contentType": "application/json",
+      "hasRateLimit": false
+    },
+    "GET /api/v1/chat/sessions/00000000-0000-0000-0000-000000000000": {
+      "status": 401,
+      "contentType": "application/json",
+      "hasRateLimit": false
+    },
+    "DELETE /api/v1/chat/sessions/00000000-0000-0000-0000-000000000000": {
+      "status": 401,
+      "contentType": "application/json",
+      "hasRateLimit": false
+    },
+    "POST /api/v1/chat/answer": {
+      "status": 401,
+      "contentType": "application/json",
+      "hasRateLimit": false
+    },
+    "POST /api/v1/chat/messages": {
+      "status": 401,
+      "contentType": "application/json",
+      "hasRateLimit": false
+    },
+    "GET /api/v1/chat/sessions/00000000-0000-0000-0000-000000000000/attachments": {
+      "status": 401,
+      "contentType": "application/json",
+      "hasRateLimit": false
+    },
+    "POST /api/v1/chat/sessions/00000000-0000-0000-0000-000000000000/attachments": {
+      "status": 401,
+      "contentType": "application/json",
+      "hasRateLimit": false
+    },
+    "DELETE /api/v1/chat/sessions/00000000-0000-0000-0000-000000000000/attachments/doc-1": {
+      "status": 401,
+      "contentType": "application/json",
+      "hasRateLimit": false
+    },
+    "GET /api/v1/unknown-endpoint": {
+      "status": 401,
+      "contentType": "application/json",
+      "hasRateLimit": false
+    }
+  },
+  "cors": {
+    "preflight_allowed": {
+      "status": 204,
+      "allowOrigin": "http://localhost:5173",
+      "allowCredentials": "true",
+      "allowMethods": "GET,POST,PUT,DELETE,OPTIONS"
+    },
+    "preflight_disallowed": {
+      "status": 403,
+      "allowOrigin": null
+    },
+    "get_allowed_origin": {
+      "status": 200,
+      "allowOrigin": "http://localhost:5173"
+    },
+    "get_disallowed_origin": {
+      "status": 403,
+      "allowOrigin": null
+    }
+  },
+  "rateLimitHeaders": {}
+}
