@@ -158,7 +158,7 @@ Expected tables: `ai_documents` and `ai_chunks`.
 
 ## Fresh database setup
 
-If this is a genuinely new CampusOS database, copy `server/.env.example` to `server/.env`, generate new random values for `JWT_ACCESS_SECRET` and `CREDENTIAL_ENCRYPTION_KEY`, and start the database. Docker initializes migrations 001–006 on the first creation of an empty volume. Do not use a new encryption key with an existing volume.
+If this is a genuinely new CampusOS database, copy `server/.env.example` to `server/.env`, generate new random values for `JWT_ACCESS_SECRET` and `CREDENTIAL_ENCRYPTION_KEY`, and start the database. Docker initializes migrations 001–009 on the first creation of an empty volume. Do not use a new encryption key with an existing volume.
 
 ## Install and start the backend
 
@@ -249,7 +249,10 @@ cd server
 npm install
 cd ..
 docker compose exec -T db psql -v ON_ERROR_STOP=1 -U campusos -d campusos -f /docker-entrypoint-initdb.d/008_chat_attachments.sql
+docker compose exec -T db psql -v ON_ERROR_STOP=1 -U campusos -d campusos -f /docker-entrypoint-initdb.d/009_attachment_source_type.sql
 ```
+
+Migration 009 extends the `ai_documents.source_type` check to include `upload`. Without it, attachment uploads fail on a freshly migrated database.
 
 If the container was created before this release, recreate it (without `-v`) so the new migration file is mounted: `docker compose up -d db`. Then add the new variables from `server/.env.example` (`OLLAMA_NUM_CTX` and the `CHAT_*` limits) to `server/.env` and restart the backend.
 

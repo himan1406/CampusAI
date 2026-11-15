@@ -19,6 +19,7 @@ services:
       - ./server/db/migrations/006_agentic_rag.sql:/docker-entrypoint-initdb.d/006_agentic_rag.sql:ro
       - ./server/db/migrations/007_phone_number.sql:/docker-entrypoint-initdb.d/007_phone_number.sql:ro
       - ./server/db/migrations/008_chat_attachments.sql:/docker-entrypoint-initdb.d/008_chat_attachments.sql:ro
+      - ./server/db/migrations/009_attachment_source_type.sql:/docker-entrypoint-initdb.d/009_attachment_source_type.sql:ro
 
 volumes:
   campusos_pgdata:

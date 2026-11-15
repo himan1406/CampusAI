@@ -50,7 +50,7 @@ CampusOS/
 │   ├── integrations/                 # ILEARN_API.md, lms-probe/
 │   └── history/                      # SPRINT6_CHANGELOG.md, START_HERE.txt
 ├── server/
-│   ├── db/migrations/                # 001_init.sql ... 008_chat_attachments.sql
+│   ├── db/migrations/                # 001_init.sql ... 009_attachment_source_type.sql
 │   ├── scripts/
 │   │   ├── check-syntax.mjs          # recursive node --check over src/
 │   │   ├── contract-snapshot.mjs     # black-box HTTP contract snapshot

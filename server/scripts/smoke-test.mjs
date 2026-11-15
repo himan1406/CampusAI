@@ -24,13 +24,12 @@ if (!DB_URL) {
 }
 
 const lines = [];
-let pass = 0, fail = 0, skip = 0, known = 0;
+let pass = 0, fail = 0, skip = 0;
 const check = (name, ok, detail = '') => {
   if (ok) { pass++; lines.push(`  PASS  ${name}`); }
   else { fail++; lines.push(`  FAIL  ${name}${detail ? '  -> ' + detail : ''}`); }
 };
 const note = (name) => { skip++; lines.push(`  SKIP  ${name}`); };
-const knownIssue = (name, detail = '') => { known++; lines.push(`  KNOWN ${name}${detail ? '  -> ' + detail : ''}`); };
 
 const child = spawn(process.execPath, [entry], {
   cwd: serverDir,
@@ -144,18 +143,11 @@ async function main() {
       method: 'POST', headers: { Authorization: `Bearer ${accessToken}` }, body: fd
     });
     const upBody = await up.json().catch(() => ({}));
-    // Known pre-existing bug: migration 006 constrains ai_documents.source_type to ('course','email')
-    // and no migration ever adds 'upload', so uploads fail on a fresh database. Reproduced identically
-    // on the pre-refactor baseline. Tracked separately so it does not mask real regressions.
-    if (up.status !== 201 && serverLog.includes('ai_documents_source_type_check')) {
-      knownIssue('attachment upload (pre-existing: source_type check excludes "upload")', `status=${up.status}`);
-    } else {
-      check('POST attachment indexes a txt file (201)', up.status === 201 && (upBody.results || []).some(r => r.ok), `status=${up.status} ${JSON.stringify(upBody).slice(0, 160)}`);
-      const del = await fetch(`${BASE}/api/v1/chat/sessions/${sessionId}/attachments/${(upBody.results || [])[0]?.id}`, {
-        method: 'DELETE', headers: { Authorization: `Bearer ${accessToken}` }
-      });
-      check('DELETE attachment returns 204', del.status === 204, `status=${del.status}`);
-    }
+    check('POST attachment indexes a txt file (201)', up.status === 201 && (upBody.results || []).some(r => r.ok), `status=${up.status} ${JSON.stringify(upBody).slice(0, 160)}`);
+    const del = await fetch(`${BASE}/api/v1/chat/sessions/${sessionId}/attachments/${(upBody.results || [])[0]?.id}`, {
+      method: 'DELETE', headers: { Authorization: `Bearer ${accessToken}` }
+    });
+    check('DELETE attachment returns 204', del.status === 204, `status=${del.status}`);
   } else {
     note('attachment upload (nomic-embed-text not pulled in Ollama)');
   }
@@ -195,7 +187,7 @@ main()
     stop();
     console.log('\n=== CampusOS smoke test ===');
     console.log(lines.join('\n'));
-    console.log(`\n${pass} passed, ${fail} failed, ${known} known, ${skip} skipped`);
+    console.log(`\n${pass} passed, ${fail} failed, ${skip} skipped`);
     if (fail && serverLog) console.log('\n--- server log (tail) ---\n' + serverLog.split('\n').slice(-25).join('\n'));
     process.exit(fail ? 1 : 0);
   });

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { API, request } from './api/client.js';
+import { API, request, refreshSession } from './api/client.js';
 import { ATTACH_EXTENSIONS, ATTACH_MAX_MB, ATTACH_MAX_FILES } from './lib/attachments.js';
 import { Bot, GraduationCap, Home, Inbox, Link2, LoaderCircle, UserRound } from 'lucide-react';
 import AuthScreen from './features/auth/AuthScreen.jsx';
@@ -75,7 +75,7 @@ function App() {
     let alive = true;
     (async () => {
       try {
-        const data = await request('/auth/refresh', { method: 'POST' });
+        const data = await refreshSession();
         if (!alive) return;
         setToken(data.access_token);
         const profile = await request('/auth/me', {}, data.access_token);

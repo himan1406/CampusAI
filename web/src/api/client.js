@@ -1,5 +1,13 @@
 export const API = import.meta.env.VITE_API_URL || 'http://localhost:4000/api/v1';
 
+// Refresh tokens are rotated by the server, so concurrent refresh calls would invalidate each
+// other. React StrictMode runs mount effects twice in development; share one in-flight request.
+let refreshInFlight = null;
+export function refreshSession() {
+  refreshInFlight = refreshInFlight || request('/auth/refresh', { method: 'POST' }).finally(() => { refreshInFlight = null; });
+  return refreshInFlight;
+}
+
 export async function request(path, options = {}, token = null) {
   const headers = { ...(options.body && !(options.body instanceof FormData) ? { 'Content-Type': 'application/json' } : {}), ...(options.headers || {}) };
   if (token) headers.Authorization = `Bearer ${token}`;
