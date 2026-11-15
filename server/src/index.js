@@ -9,7 +9,7 @@ import { router } from './routes.js';
 import { authRouter } from './modules/auth/auth.routes.js';
 import { credentialsRouter } from './modules/auth/credentials.routes.js';
 import { emailRouter } from './modules/email/email.routes.js';
-import { lmsRouter } from './lms-routes.js';
+import { lmsRouter } from './modules/lms/lms.routes.js';
 import { attachmentsRouter } from './chat-attachments.js';
 import { pool } from './db/pool.js';
 import { checkOllama } from './modules/ai/agent/ollama.client.js';
