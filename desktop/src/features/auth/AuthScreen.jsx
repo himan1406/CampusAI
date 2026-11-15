@@ -56,6 +56,35 @@ export default function AuthScreen() {
       fontFamily: tokens.font
     }}>
       <div style={{ maxWidth: 360, width: '100%' }}>
+        <header style={{
+          background: tokens.surface,
+          borderRadius: tokens.radius,
+          padding: '0.75rem 1rem',
+          marginBottom: '1rem',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          color: tokens.text,
+          fontFamily: tokens.font
+        }}>
+          <h1 style={{
+            fontWeight: 600,
+            fontSize: '1.25rem'
+          }}>CampusOS</h1>
+          <button
+            style={{
+              background: 'none',
+              border: 'none',
+              color: tokens.text,
+              fontSize: '1.25rem',
+              fontWeight: 500,
+              cursor: 'pointer'
+            }}
+            onClick={() => window.close()}
+            aria-label="Close window"
+            title="Close"
+          >×</button>
+        </header>
         <h2 style={{
           marginBottom: '1rem',
           fontWeight: 600,

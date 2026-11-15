@@ -21,7 +21,8 @@ function createWindow() {
     resizable: false,
     movable: true,
     alwaysOnTop: true,
-    frame: true,
+    frame: false,
+    titleBarStyle: 'hiddenInset',
     webPreferences: {
       preload: path.join(__dirname, 'preload.mjs'),
       nodeIntegration: false,
