@@ -4,7 +4,8 @@ import { z } from 'zod';
 import { pool } from './db/pool.js';
 import { requireUser } from './middleware/require-user.js';
 import { decryptSecret, encryptSecret } from './lib/vault.js';
-import { extractDocumentText, indexTextDocuments } from './document-indexer.js';
+import { extractDocumentText } from './modules/ai/rag/extract.js';
+import { indexTextDocuments } from './modules/ai/rag/indexer.js';
 
 export const lmsRouter = Router();
 lmsRouter.use(requireUser);

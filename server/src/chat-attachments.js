@@ -4,7 +4,10 @@ import multer from 'multer';
 import JSZip from 'jszip';
 import { pool } from './db/pool.js';
 import { requireUser } from './middleware/require-user.js';
-import { extractDocumentText, indexTextDocuments, chunkText, decryptDocumentTitle } from './document-indexer.js';
+import { extractDocumentText } from './modules/ai/rag/extract.js';
+import { chunkText } from './modules/ai/rag/chunk.js';
+import { indexTextDocuments } from './modules/ai/rag/indexer.js';
+import { decryptDocumentTitle } from './modules/ai/rag/decrypt.js';
 
 // Documents attached to a single chat conversation.
 // Files are never written to disk: the text is extracted in memory, encrypted, chunked and

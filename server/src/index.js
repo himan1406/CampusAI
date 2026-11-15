@@ -11,7 +11,7 @@ import { emailRouter } from './email-routes.js';
 import { lmsRouter } from './lms-routes.js';
 import { attachmentsRouter } from './chat-attachments.js';
 import { pool } from './db/pool.js';
-import { checkOllama } from './ollama.js';
+import { checkOllama } from './modules/ai/agent/ollama.client.js';
 
 const app = express();
 app.disable('x-powered-by');

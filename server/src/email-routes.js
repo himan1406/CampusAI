@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { pool } from './db/pool.js';
 import { requireUser } from './middleware/require-user.js';
 import { encryptSecret, decryptSecret } from './lib/vault.js';
-import { indexTextDocuments } from './document-indexer.js';
+import { indexTextDocuments } from './modules/ai/rag/indexer.js';
 
 export const emailRouter = Router();
 const providers = new Set(['gmail', 'outlook']);
