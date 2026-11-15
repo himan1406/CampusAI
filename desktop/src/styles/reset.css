@@ -1,0 +1,70 @@
+/* ==========================================================================
+   CampusOS reset + base — matches web app design tokens
+   ========================================================================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --font: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --bg: #f6f7f9;
+  --surface: #ffffff;
+  --surface-2: #f1f3f6;
+  --surface-3: #e6e9ee;
+  --border: #e3e6eb;
+  --border-strong: #cdd3dc;
+  --text: #14181f;
+  --text-2: #4a5260;
+  --text-3: #6b7482;
+  --accent: #2f54c8;
+  --accent-hover: #2744a8;
+  --accent-soft: #e9eefb;
+  --accent-text: #2441a6;
+  --ok: #1b7a4b;
+  --ok-bg: #e7f4ec;
+  --warn: #8a5b00;
+  --warn-bg: #fcf3dc;
+  --danger: #b3261e;
+  --danger-bg: #fcebe9;
+  --radius: 8px;
+  --radius-sm: 6px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0e1014;
+    --surface: #15181e;
+    --surface-2: #1b1f26;
+    --surface-3: #262b34;
+    --border: #262b33;
+    --border-strong: #363c47;
+    --text: #e7e9ee;
+    --text-2: #a3aab6;
+    --text-3: #7d8591;
+    --accent: #4668d8;
+    --accent-hover: #5577e6;
+    --accent-soft: #1a2440;
+    --accent-text: #9db6f5;
+    --ok: #5cc18d;
+    --ok-bg: #14291f;
+    --warn: #e2b45a;
+    --warn-bg: #2d2410;
+    --danger: #f08a82;
+    --danger-bg: #34191a;
+  }
+}
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: var(--surface-2); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: var(--radius-sm); }
+::-webkit-scrollbar-thumb:hover { background: var(--border-strong); }
