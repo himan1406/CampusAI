@@ -21,11 +21,11 @@ function createWindow() {
     resizable: false,
     movable: true,
     alwaysOnTop: true,
-    frame: false,
+    frame: true,
     webPreferences: {
       preload: path.join(__dirname, 'preload.mjs'),
-      // nodeIntegration: false,
-      // contextBridge: true
+      nodeIntegration: false,
+      contextBridge: true
     }
   });
 
