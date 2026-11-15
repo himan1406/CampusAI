@@ -1,0 +1,65 @@
+/* ==========================================================================
+   Dashboard
+   ========================================================================== */
+.stats-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 12px; }
+.stat-card, .panel-card, .connection-card, .profile-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.stat-card { padding: 16px; }
+.stat-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  color: var(--text-2);
+  display: grid;
+  place-items: center;
+  margin-bottom: 12px;
+}
+.stat-card > span { display: block; font-size: 13px; color: var(--text-2); }
+.stat-card strong { display: block; font-size: 24px; font-weight: 600; line-height: 1.25; margin: 2px 0; }
+.stat-card small { font-size: 12px; color: var(--text-3); }
+
+.dashboard-grid { display: grid; grid-template-columns: 1.3fr 1fr; gap: 12px; }
+.panel-card { padding: 20px; }
+.panel-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; color: var(--text-3); }
+.panel-head h2, .next-panel h2 { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+.panel-head p, .next-panel p { font-size: 13px; color: var(--text-3); }
+
+.provider-row { display: flex; align-items: center; gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--border); }
+.provider-row:last-of-type { border-bottom: 0; }
+.provider-logo {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  display: grid;
+  place-items: center;
+  background: var(--surface-2);
+  color: var(--text-2);
+  font-size: 14px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+.provider-logo.large { width: 40px; height: 40px; font-size: 16px; }
+.provider-copy { min-width: 0; flex: 1; }
+.provider-copy strong, .provider-copy span { display: block; }
+.provider-copy strong { font-size: 14px; font-weight: 500; }
+.provider-copy span { font-size: 12.5px; color: var(--text-3); overflow: hidden; text-overflow: ellipsis; }
+
+.ai-card { display: flex; flex-direction: column; align-items: flex-start; }
+.ai-symbol {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius);
+  background: var(--accent-soft);
+  color: var(--accent-text);
+  display: grid;
+  place-items: center;
+  margin-bottom: 14px;
+}
+.ai-card h2 { font-size: 17px; font-weight: 600; margin-bottom: 6px; }
+.ai-card p { font-size: 13px; color: var(--text-3); line-height: 1.6; max-width: 38ch; margin-bottom: 16px; }
+.next-panel { margin-top: 12px; display: flex; justify-content: space-between; align-items: center; gap: 20px; }
+

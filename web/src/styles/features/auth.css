@@ -1,0 +1,51 @@
+/* ==========================================================================
+   Sign in / sign up
+   ========================================================================== */
+.auth-screen {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 28px 16px;
+}
+.auth-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+.auth-card {
+  width: min(100%, 420px);
+  padding: 28px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 1px 2px rgb(0 0 0 / .04);
+}
+.auth-card h1 { font-size: 22px; line-height: 1.25; font-weight: 600; letter-spacing: -.01em; margin-bottom: 4px; }
+.muted { font-size: 13.5px; color: var(--text-3); margin-bottom: 22px; }
+.auth-form { display: grid; gap: 14px; }
+.auth-form label { display: grid; gap: 6px; font-size: 13px; font-weight: 500; color: var(--text-2); }
+.auth-form small { font-size: 12px; font-weight: 400; color: var(--text-3); }
+.optional { font-weight: 400; color: var(--text-3); }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.auth-switch { text-align: center; font-size: 13px; color: var(--text-3); margin-top: 18px; }
+.auth-switch button { border: 0; background: none; color: var(--accent-text); font-size: 13px; font-weight: 500; }
+.auth-switch button:hover { text-decoration: underline; }
+.auth-security {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  border-top: 1px solid var(--border);
+  padding-top: 14px;
+  margin-top: 18px;
+  color: var(--text-3);
+  font-size: 12px;
+  line-height: 1.5;
+}
+.auth-security svg { color: var(--ok); flex-shrink: 0; margin-top: 1px; }
+.auth-footer { color: var(--text-3); font-size: 12px; margin-top: 18px; }
+

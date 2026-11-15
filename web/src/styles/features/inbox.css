@@ -1,0 +1,69 @@
+/* ==========================================================================
+   Inbox
+   ========================================================================== */
+.inbox-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; color: var(--text-3); font-size: 13px; }
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: min(440px, 100%);
+  padding: 8px 12px;
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  color: var(--text-3);
+}
+.search-box:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.search-box input { flex: 1; min-width: 0; background: none; border: 0; outline: none; color: var(--text); font-size: 14px; }
+.search-box button { border: 0; background: none; color: var(--accent-text); padding: 0; display: grid; }
+
+.inbox-layout { display: grid; grid-template-columns: minmax(300px, .85fr) minmax(0, 1.15fr); gap: 12px; min-height: 480px; }
+.message-list, .message-detail { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+.message-list { max-height: 70vh; overflow: auto; }
+.message-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  background: transparent;
+  padding: 12px 14px;
+}
+.message-item:hover { background: var(--surface-2); }
+.message-item.selected { background: var(--accent-soft); }
+.message-item strong, .message-item > span, .message-item p { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.message-item strong { font-size: 13.5px; font-weight: 500; margin: 6px 0 2px; }
+.message-item > span { font-size: 12.5px; color: var(--text-2); }
+.message-item p { font-size: 12.5px; color: var(--text-3); margin-top: 3px; }
+.message-item-top, .detail-top { display: flex; justify-content: space-between; align-items: center; }
+.message-item time, .detail-top time { font-size: 12px; color: var(--text-3); }
+.provider-tag {
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: capitalize;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: var(--surface-2);
+  color: var(--text-2);
+}
+.message-detail { padding: 22px; min-width: 0; }
+.message-detail h2 { font-size: 18px; font-weight: 600; line-height: 1.35; margin: 16px 0 12px; }
+.sender-line { padding-bottom: 14px; border-bottom: 1px solid var(--border); }
+.sender-line strong, .sender-line span { display: block; }
+.sender-line strong { font-size: 13.5px; font-weight: 500; }
+.sender-line span { font-size: 12.5px; color: var(--text-3); }
+.detail-body { font-size: 14px; line-height: 1.7; color: var(--text); white-space: pre-wrap; overflow-wrap: anywhere; padding: 18px 0; max-height: 48vh; overflow: auto; }
+
+.empty-state, .empty-detail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: 280px;
+  color: var(--text-3);
+  padding: 20px;
+}
+.empty-state strong, .empty-detail strong { font-size: 14px; font-weight: 500; color: var(--text); margin: 12px 0 4px; }
+.empty-state p, .empty-detail span { font-size: 13px; line-height: 1.55; max-width: 280px; margin: 0; }
+
