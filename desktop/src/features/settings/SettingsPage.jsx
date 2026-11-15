@@ -1,5 +1,32 @@
 import React, { useState, useEffect } from 'react';
-import { LoaderCircle, CheckCircle, XCircle, ExternalLink } from 'lucide-react';
+import { CheckCircle } from 'lucide-react';
+
+const cardStyle = {
+  background: 'var(--surface)',
+  borderRadius: 'var(--radius)',
+  border: '1px solid var(--border)',
+  padding: 16,
+  marginBottom: 16
+};
+
+const labelStyle = {
+  display: 'block',
+  marginBottom: 6,
+  fontSize: 12,
+  color: 'var(--text-2)'
+};
+
+const inputStyle = {
+  width: '100%',
+  padding: '0.5rem 0.75rem',
+  border: '1px solid var(--border)',
+  borderRadius: 'var(--radius-sm)',
+  fontSize: 13,
+  fontFamily: 'var(--font)',
+  background: 'var(--surface-2)',
+  color: 'var(--text)',
+  outline: 'none'
+};
 
 export default function SettingsPage({ onNavigate }) {
   const [serverUrl, setServerUrl] = useState('http://localhost:5000');
@@ -8,121 +35,183 @@ export default function SettingsPage({ onNavigate }) {
   const [isListening, setIsListening] = useState(false);
   const [hotkeyCombo, setHotkeyCombo] = useState('F12');
   const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
 
   useEffect(() => {
-    const storedServer = window.electron.store.get('serverUrl');
-    const storedToken = window.electron.store.get('accessToken');
-    const storedHotkey = window.electron.store.get('hotkey');
+    // electron-store reads are async IPC calls, so they must be awaited.
+    const load = async () => {
+      const storedServer = await window.electron.store.get('serverUrl');
+      const storedToken = await window.electron.store.get('accessToken');
+      const storedHotkey = await window.electron.store.get('hotkey');
 
-    if (storedServer) setServerUrl(storedServer);
-    if (storedToken) setAccessToken(storedToken);
-    if (storedHotkey) setHotkey(storedHotkey);
+      if (storedServer) setServerUrl(storedServer);
+      if (storedToken) setAccessToken(storedToken);
+      if (storedHotkey) {
+        setHotkey(storedHotkey);
+        setHotkeyCombo(storedHotkey);
+      }
+    };
+    load();
   }, []);
 
-  const handleHotkeyKeydown = (e) => {
-    const combo = [];
-    if (e.ctrlKey) combo.push('ctrl');
-    if (e.shiftKey) combo.push('shift');
-    if (e.altKey) combo.push('alt');
-    combo.push(e.key.toLowerCase());
-    const keyCombo = combo.join('+');
-    setHotkeyCombo(keyCombo);
+  const startListening = () => {
     setIsListening(true);
+    setSaved(false);
 
-    const handleKeyUp = (upE) => {
-      setIsListening(false);
-      setHotkey(keyCombo);
-      setHotkeyCombo(keyCombo);
-      window.removeEventListener('keyup', handleKeyUp);
+    const handleKeydown = (event) => {
+      event.preventDefault();
+      const combo = [];
+      if (event.ctrlKey) combo.push('ctrl');
+      if (event.shiftKey) combo.push('shift');
+      if (event.altKey) combo.push('alt');
+      if (event.metaKey) combo.push('meta');
+      if (!['Control', 'Shift', 'Alt', 'Meta'].includes(event.key)) {
+        combo.push(event.key.toLowerCase());
+      }
+      if (combo.length) setHotkeyCombo(combo.join('+'));
+
+      const stop = () => {
+        setIsListening(false);
+        window.removeEventListener('keyup', stop);
+      };
+      window.addEventListener('keyup', stop);
     };
-    window.addEventListener('keyup', handleKeyUp);
+
+    window.addEventListener('keydown', handleKeydown, { once: true });
   };
 
   const saveSettings = async () => {
     setSaving(true);
+    setSaved(false);
     try {
-      window.electron.store.set('serverUrl', serverUrl);
-      window.electron.store.set('accessToken', accessToken);
-      window.electron.store.set('hotkey', hotkeyCombo);
+      await window.electron.store.set('serverUrl', serverUrl.trim());
+      await window.electron.store.set('accessToken', accessToken.trim());
+      await window.electron.store.set('hotkey', hotkeyCombo);
       setHotkey(hotkeyCombo);
-      setSaving(false);
+      setSaved(true);
     } catch (err) {
       console.error('Save error:', err);
+    } finally {
       setSaving(false);
     }
   };
 
   return (
-    <div>
-      <section>
-        <h1 style="fontSize: 20; fontWeight: 600; marginBottom: 16; color: #14181f">Settings</h1>
+    <div style={{
+      minHeight: '100vh',
+      background: 'var(--bg)',
+      color: 'var(--text)',
+      fontFamily: 'var(--font)',
+      padding: 20
+    }}>
+      <h1 style={{ fontSize: 20, fontWeight: 600, marginBottom: 16, color: 'var(--text)' }}>Settings</h1>
 
-        <div style="background: #fff; borderRadius: 8; padding: 20px; border: 1px solid #e3e6ec; marginBottom: 24">
-          <div style="marginBottom: 16">
-            <label style="display: block; marginBottom: 6; fontSize: 13; color: #4a5260">Server URL</label>
-            <input
-              value={serverUrl}
-              onChange={(e) => setServerUrl(e.target.value)}
-              style="width: 100%; padding: 8px 12px; border: 1px solid #e3e6ec; borderRadius: 4; fontSize: 13; background: #fff"
-            />
-          </div>
-
-          <div style="marginBottom: 16">
-            <label style="display: block; marginBottom: 6; fontSize: 13; color: #4a5260">Access Token</label>
-            <input
-              value={accessToken}
-              onChange={(e) => setAccessToken(e.target.value)}
-              style="width: 100%; padding: 8px 12px; border: 1px solid #e3e6ec; borderRadius: 4; fontSize: 13; background: #fff"
-            />
-          </div>
-
-          <div style="marginBottom: 16">
-            <label style="display: block; marginBottom: 6; fontSize: 13; color: #4a5260">Hotkey</label>
-            <div style="display: flex; alignItems: center; gap: 8; border: 1px solid #e3e6ec; borderRadius: 4; padding: 8px 12px; background: #fff; height: 40">
-              <span onClick={() => setIsListening(true)} style="flexGrow: 1; fontSize: 13; color: #14181f; cursor: pointer">
-                {hotkeyCombo || 'Click to set'}
-              </span>
-              <CheckCircle style="width: 16; height: 16; color: #1b7a4b" />
-            </div>
-            <p style="fontSize: 11; color: #6b7482; marginTop: 4">
-              Press your desired key combination (e.g., Ctrl+Shift+H)
-            </p>
-          </div>
-
-          {isListening && (
-            <p style="marginTop: 12; color: #b3261e; fontSize: 13">Press any key to set as hotkey...</p>
-          )}
+      <div style={cardStyle}>
+        <div style={{ marginBottom: 14 }}>
+          <label style={labelStyle}>Server URL</label>
+          <input value={serverUrl} onChange={(e) => setServerUrl(e.target.value)} style={inputStyle} />
         </div>
 
-        <div style="background: #fff; borderRadius: 8; padding: 20px; border: 1px solid #e3e6ec; marginBottom: 24">
-          <h2 style="fontSize: 14; fontWeight: 600; color: #14181f; marginBottom: 12">About</h2>
-          <p style="fontSize: 13; color: #4a5260">
-            CampusOS Desktop Voice Assistant<br/>
-            Version 1.0.0
+        <div style={{ marginBottom: 14 }}>
+          <label style={labelStyle}>Access Token</label>
+          <input
+            value={accessToken}
+            onChange={(e) => setAccessToken(e.target.value)}
+            style={{ ...inputStyle, fontFamily: 'monospace', fontSize: 12 }}
+          />
+        </div>
+
+        <div>
+          <label style={labelStyle}>Hotkey</label>
+          <div
+            onClick={startListening}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8,
+              border: `1px solid ${isListening ? 'var(--accent)' : 'var(--border)'}`,
+              borderRadius: 'var(--radius-sm)',
+              padding: '0.5rem 0.75rem',
+              background: 'var(--surface-2)',
+              cursor: 'pointer'
+            }}
+          >
+            <span style={{ flexGrow: 1, fontSize: 13, color: 'var(--text)' }}>
+              {isListening ? 'Press a key combination…' : hotkeyCombo || 'Click to set'}
+            </span>
+            <CheckCircle style={{ width: 16, height: 16, color: 'var(--ok)' }} />
+          </div>
+          <p style={{ fontSize: 11, color: 'var(--text-3)', marginTop: 4 }}>
+            Click the field, then press your desired combination (e.g. Ctrl+Shift+H).
           </p>
         </div>
 
-        <button
-          onClick={onNavigate}
-          style="width: 100%; padding: 8px 12px; background: #3b51d3; color: #fff; border: none; borderRadius: 4; cursor: pointer; fontSize: 13; fontWeight: 500; marginTop: 16"
-        >
-          Back to Dashboard
-        </button>
+        {isListening && (
+          <p style={{ marginTop: 12, color: 'var(--accent-text)', fontSize: 12 }}>
+            Listening for keys…
+          </p>
+        )}
+      </div>
 
-        <button
-          onClick={saveSettings}
-          style="width: 100%; padding: 8px 12px; background: #fff; color: #14181f; border: 1px solid #e3e6ec; borderRadius: 4; cursor: pointer; fontSize: 13; fontWeight: 500; marginTop: 8; marginBottom: 16"
-        >
-          Save Settings
-        </button>
+      <div style={cardStyle}>
+        <h2 style={{ fontSize: 14, fontWeight: 600, color: 'var(--text)', marginBottom: 8 }}>About</h2>
+        <p style={{ fontSize: 13, color: 'var(--text-2)', lineHeight: 1.5 }}>
+          CampusOS Desktop Voice Assistant<br />
+          Version 1.0.0
+        </p>
+      </div>
 
-        <button
-          onClick={saveSettings}
-          style="width: 100%; padding: 8px 12px; background: transparent; color: #6b7482; border: none; borderRadius: 4; cursor: pointer; fontSize: 13; marginTop: 8"
-        >
-          Cancel
-        </button>
-      </section>
+      <button
+        onClick={saveSettings}
+        disabled={saving}
+        style={{
+          width: '100%',
+          padding: '0.625rem 0.75rem',
+          background: saving ? 'var(--surface-3)' : 'var(--accent)',
+          color: saving ? 'var(--text-3)' : '#fff',
+          border: 'none',
+          borderRadius: 'var(--radius-sm)',
+          cursor: saving ? 'default' : 'pointer',
+          fontSize: 13,
+          fontWeight: 600,
+          fontFamily: 'var(--font)'
+        }}
+      >
+        {saving ? 'Saving…' : 'Save settings'}
+      </button>
+
+      {saved && (
+        <p style={{
+          marginTop: 8,
+          padding: '0.5rem 0.75rem',
+          background: 'var(--ok-bg)',
+          color: 'var(--ok)',
+          border: '1px solid var(--ok)',
+          borderRadius: 'var(--radius-sm)',
+          fontSize: 12
+        }}>
+          Settings saved.
+        </p>
+      )}
+
+      <button
+        onClick={onNavigate}
+        style={{
+          width: '100%',
+          padding: '0.5rem 0.75rem',
+          background: 'var(--surface-2)',
+          color: 'var(--text-2)',
+          border: '1px solid var(--border)',
+          borderRadius: 'var(--radius-sm)',
+          cursor: 'pointer',
+          fontSize: 13,
+          fontFamily: 'var(--font)',
+          marginTop: 8,
+          marginBottom: 16
+        }}
+      >
+        Back to Dashboard
+      </button>
     </div>
   );
 }

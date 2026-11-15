@@ -42,6 +42,10 @@ const authSlice = createSlice({
     setTokens: (state, action) => {
       state.accessToken = action.payload.accessToken;
       state.refreshToken = action.payload.refreshToken;
+      state.status = AuthStatus.AUTHENTICATED;
+    },
+    setUser: (state, action) => {
+      state.user = action.payload.user;
     }
   }
 });
@@ -80,51 +84,68 @@ export const {
   loginSuccess,
   loginFailure,
   logout,
-  setTokens
+  setTokens,
+  setUser
 } = authSlice.actions;
 export const { setHotkey, toggleListening } = hotkeySlice.actions;
 export const { setSessionId, addMessage } = sessionSlice.actions;
 
-// Export reducer
-export const rootReducer = authSlice.reducer;
+// Export reducer — combine all slices
+import { combineReducers } from '@reduxjs/toolkit';
+export const rootReducer = combineReducers({
+  auth: authSlice.reducer,
+  hotkey: hotkeySlice.reducer,
+  session: sessionSlice.reducer,
+});
 
-// Async thunk for login
-export const login = (email, password) => async (dispatch) => {
+// The API returns either { error: 'message' } or a Zod flatten of field errors.
+function readError(data, fallback) {
+  if (!data) return fallback;
+  if (typeof data.error === 'string') return data.error;
+  const fieldErrors = data.error?.fieldErrors;
+  if (fieldErrors) {
+    const entry = Object.entries(fieldErrors).find(([, messages]) => messages?.length);
+    if (entry) return `${entry[0].replace(/_/g, ' ')}: ${entry[1][0]}`;
+  }
+  const formErrors = data.error?.formErrors;
+  if (formErrors?.length) return formErrors[0];
+  return data.detail || fallback;
+}
+
+async function authenticate(dispatch, call, fallback) {
   dispatch(loginStart());
   try {
-    const res = await fetch('/api/v1/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password })
-    });
-    const data = await res.json();
-    if (res.ok) {
+    const { ok, data } = await call();
+    if (ok && data?.access_token) {
       dispatch(loginSuccess(data));
-      // Store tokens in electron-store via IPC
-      window.electron.store.set('accessToken', data.access_token);
-      window.electron.store.set('refreshToken', data.refresh_token);
-    } else {
-      dispatch(loginFailure({ error: data.detail || 'Login failed' }));
+      return true;
     }
+    dispatch(loginFailure({ error: readError(data, fallback) }));
+    return false;
   } catch (err) {
-    dispatch(loginFailure({ error: err.message || 'Network error' }));
+    dispatch(loginFailure({ error: err.message || 'Could not reach the CampusOS server.' }));
+    return false;
   }
-};
+}
 
-// Async thunk for refresh
+// Async thunks (both run in the main process via IPC)
+export const login = (credentials) => (dispatch) =>
+  authenticate(dispatch, () => window.electron.auth.login(credentials), 'Login failed');
+
+export const signup = (account) => (dispatch) =>
+  authenticate(dispatch, () => window.electron.auth.signup(account), 'Could not create your account');
+
+// Async thunk for refresh (runs in the main process via IPC)
 export const refreshSession = () => async (dispatch) => {
   try {
-    const res = await fetch('/api/v1/auth/refresh', {
-      method: 'POST',
-      credentials: 'include'
-    });
-    const data = await res.json();
-    if (res.ok) {
-      dispatch(setTokens({ accessToken: data.access_token, refreshToken: data.refresh_token }));
-      window.electron.store.set('accessToken', data.access_token);
-      window.electron.store.set('refreshToken', data.refresh_token);
-    }
+    const { ok, data } = await window.electron.auth.refresh();
+    if (!ok || !data) return false;
+    dispatch(setTokens({ accessToken: data.access_token, refreshToken: data.refresh_token }));
+    const me = await window.electron.auth.me();
+    if (me.ok && me.data?.user) dispatch(setUser({ user: me.data.user }));
+    return true;
   } catch (err) {
     console.error('Refresh error:', err);
+    return false;
   }
 };

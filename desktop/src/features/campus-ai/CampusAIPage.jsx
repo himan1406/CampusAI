@@ -179,70 +179,85 @@ export default function CampusAIPage({ onNavigate }) {
     recognitionRef.current.start();
   };
   
-  const handleKeyDown = (e) => {
-    // Handle attachment click, etc.
-  };
-  
   return (
     <div style={{
-      minHeight: '100vh',
+      height: '100vh',
+      display: 'flex',
+      flexDirection: 'column',
       background: 'var(--bg)',
       color: 'var(--text)',
       fontFamily: 'var(--font)'
     }}>
       <header style={{
         padding: 20,
+        flexShrink: 0,
         borderBottom: '1px solid var(--border)',
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center'
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <UserRound style={{ width: 32, height: 32, borderRadius: 50, background: '#e5e7eb', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 600, color: '#6b7482' }} />
-          <span style={{ fontSize: 14, fontWeight: 500, color: '#14181f' }}>Campus AI</span>
+          <UserRound style={{ width: 32, height: 32, borderRadius: 50, background: 'var(--surface-3)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 600, color: 'var(--text-3)' }} />
+          <span style={{ fontSize: 14, fontWeight: 500, color: 'var(--text)' }}>Campus AI</span>
         </div>
-        <Plus style={{ width: 24, height: 24, color: '#fff', background: '#3b51d3', borderRadius: 4, display: 'flex', alignItems: 'center', justifyContent: 'center' }} />
+        <div style={{
+          width: 28,
+          height: 28,
+          background: 'var(--accent)',
+          borderRadius: 'var(--radius-sm)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}>
+          <Plus style={{ width: 16, height: 16, color: '#fff' }} />
+        </div>
       </header>
       
-      <section style={{ padding: 20, flexGrow: 1, overflowY: 'auto' }}>
-        <div style={{ height: 100, marginBottom: 20 }}>
+      <section style={{ padding: 20, flexGrow: 1, overflowY: 'auto', minHeight: 0 }}>
+        <div>
           {/* Chat messages area */}
           {messages.map((msg) => (
-            <div key={msg.id} style={{
-              marginBottom: 16,
-              maxWidth: '80%',
-              wordBreak: 'break-word'
-            }}>
-              <div style={{
-                marginBottom: 4,
-                display: 'flex',
-                alignItems: 'flex-start'
-              }}>
+            <div key={msg.id} style={{ marginBottom: 16, maxWidth: '92%' }}>
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8 }}>
                 {msg.role === 'assistant' && (
-                  <MessageSquare style={{ width: 24, height: 24, color: '#fff', background: '#3b51d3', borderRadius: 8, flexShrink: 0, marginRight: 8, flexShrink: 0 }} />
+                  <div style={{
+                    width: 24,
+                    height: 24,
+                    borderRadius: 'var(--radius-sm)',
+                    background: 'var(--accent)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0
+                  }}>
+                    <MessageSquare style={{ width: 14, height: 14, color: '#fff' }} />
+                  </div>
                 )}
                 {msg.role === 'user' && (
-                  <div style={{ width: 24, height: 24, borderRadius: 8, background: '#3b51d3', color: '#fff', flexShrink: 0, marginRight: 8 }} />
+                  <div style={{ width: 24, height: 24, borderRadius: 'var(--radius-sm)', background: 'var(--surface-3)', flexShrink: 0 }} />
                 )}
-                <div style={{ fontSize: 13, lineHeight: 1.5, color: '#14181f' }}>
-                  {msg.content}
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: 13, lineHeight: 1.5, color: 'var(--text)', wordBreak: 'break-word' }}>
+                    {msg.content}
+                  </div>
+                  {msg.timestamp && (
+                    <div style={{ fontSize: 10, color: 'var(--text-3)', marginTop: 3 }}>
+                      {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    </div>
+                  )}
                 </div>
-                {msg.timestamp && (
-                  <span style={{ fontSize: 10, color: '#6b7482', marginLeft: 8, marginTop: 2 }}>{msg.timestamp.toLocaleTimeString()}</span>
-                )}
               </div>
             </div>
           ))}
-          
-          {/* Assistant initial state or streaming area */}
-          {isProcessing && messages.length === 1 && messages[0].role === 'assistant' && messages[0].content === 'How can I help today?' && {
-            // Show thinking indicator while processing
-          }}
+
+          {isProcessing && (
+            <p style={{ fontSize: 12, color: 'var(--text-3)' }}>Thinking…</p>
+          )}
         </div>
       </section>
       
-      <section style={{ padding: '0 20px 20px', borderTop: '1px solid var(--border)', background: '#fff' }}>
-        <form onSubmit={handleKeyDown} style={{ display: 'flex', gap: 8, padding: 12, borderRadius: 8, background: 'var(--surface-2)' }}>
+      <section style={{ padding: '0 20px 20px', borderTop: '1px solid var(--border)', background: 'var(--surface)', flexShrink: 0 }}>
+        <form onSubmit={handleSend} style={{ display: 'flex', gap: 8, padding: 8, borderRadius: 'var(--radius)', background: 'var(--surface-2)' }}>
           <input
             value={input}
             onChange={(e) => setInput(e.target.value)}
@@ -253,7 +268,7 @@ export default function CampusAIPage({ onNavigate }) {
               border: 'none',
               background: 'transparent',
               fontSize: 13,
-              color: '#14181f',
+              color: 'var(--text)',
               fontFamily: 'var(--font)'
             }}
           />
@@ -265,7 +280,7 @@ export default function CampusAIPage({ onNavigate }) {
               justifyContent: 'center',
               width: 40,
               height: 40,
-              background: '#3b51d3',
+              background: 'var(--accent)',
               color: '#fff',
               border: 'none',
               borderRadius: 8,

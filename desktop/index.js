@@ -18,15 +18,18 @@ function createWindow() {
   const mainWindow = new BrowserWindow({
     width: 400,
     height: 600,
-    resizable: false,
+    resizable: true,
+    minWidth: 360,
+    minHeight: 520,
+    backgroundColor: '#0d0f13',
     movable: true,
     alwaysOnTop: true,
     frame: false,
     titleBarStyle: 'hiddenInset',
     webPreferences: {
-      preload: path.join(__dirname, 'preload.mjs'),
+      preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: false,
-      contextBridge: true
+      contextIsolation: true
     }
   });
 
@@ -53,33 +56,56 @@ app.on('window-all-closed', () => {
 ipcMain.handle('store:get', (key) => store.get(key));
 ipcMain.handle('store:set', async (key, value) => store.set(key, value));
 
-ipcMain.handle('auth:login', async (e, email, password) => {
-  const res = await fetch(`${store.get('serverUrl')}/api/v1/auth/login`, {
+// Parse a JSON body defensively so a non-JSON error page doesn't throw.
+async function readJson(res) {
+  try {
+    return await res.json();
+  } catch {
+    return null;
+  }
+}
+
+// Desktop uses the token transport endpoints: the refresh token is returned in
+// the body and kept in electron-store instead of an HTTP-only cookie.
+async function authenticate(path, payload) {
+  const res = await fetch(`${store.get('serverUrl')}/api/v1/auth/${path}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, password })
+    body: JSON.stringify(payload)
   });
-  const data = await res.json();
-  if (res.ok) {
+  const data = await readJson(res);
+  if (res.ok && data) {
     store.set('accessToken', data.access_token);
     store.set('refreshToken', data.refresh_token);
   }
-  return { res, data };
+  return { ok: res.ok, status: res.status, data };
+}
+
+ipcMain.handle('auth:login', (e, credentials) => authenticate('mobile/login', credentials));
+
+ipcMain.handle('auth:signup', (e, account) => authenticate('mobile/signup', account));
+
+ipcMain.handle('auth:me', async () => {
+  const res = await fetch(`${store.get('serverUrl')}/api/v1/auth/me`, {
+    headers: { Authorization: `Bearer ${store.get('accessToken')}` }
+  });
+  return { ok: res.ok, status: res.status, data: await readJson(res) };
 });
 
 ipcMain.handle('auth:refresh', async () => {
-  const token = store.get('accessToken');
-  if (!token) return { ok: false, error: 'no token' };
-  const res = await fetch(`${store.get('serverUrl')}/api/v1/auth/refresh`, {
+  const refreshToken = store.get('refreshToken');
+  if (!refreshToken) return { ok: false, status: 401, data: null };
+  const res = await fetch(`${store.get('serverUrl')}/api/v1/auth/mobile/refresh`, {
     method: 'POST',
-    credentials: 'include'
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ refresh_token: refreshToken })
   });
-  const data = await res.json();
-  if (res.ok) {
+  const data = await readJson(res);
+  if (res.ok && data) {
     store.set('accessToken', data.access_token);
     store.set('refreshToken', data.refresh_token);
   }
-  return { res, data };
+  return { ok: res.ok, status: res.status, data };
 });
 
 ipcMain.handle('chat:create-session', async () => {
@@ -88,8 +114,7 @@ ipcMain.handle('chat:create-session', async () => {
     method: 'POST',
     headers: { Authorization: `Bearer ${token}` }
   });
-  const data = await res.json();
-  return { res, data };
+  return { ok: res.ok, status: res.status, data: await readJson(res) };
 });
 
 ipcMain.handle('chat:answer', async (e, sessionId, message) => {
@@ -102,7 +127,7 @@ ipcMain.handle('chat:answer', async (e, sessionId, message) => {
     },
     body: JSON.stringify({ message })
   });
-  return { res, data: null };
+  return { ok: res.ok, status: res.status, data: await readJson(res) };
 });
 
 console.log('Electron main process ready');

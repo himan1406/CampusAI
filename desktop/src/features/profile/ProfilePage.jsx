@@ -11,7 +11,7 @@ export default function ProfilePage() {
     }}>
       <section style={{ padding: 20 }}>
         <div style={{
-          background: '#fff',
+          background: 'var(--surface)',
           borderRadius: 8,
           padding: 20,
           border: '1px solid var(--border)',
@@ -20,34 +20,34 @@ export default function ProfilePage() {
           <div style={{ display: 'flex', alignItems: 'center', marginBottom: 16 }}>
             <div style={{
               width: 64, height: 64, borderRadius: 32,
-              background: '#e5e7eb', display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontWeight: 600, color: '#6b7482', marginRight: 16, fontSize: 24
+              background: 'var(--surface-3)', display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontWeight: 600, color: 'var(--text-3)', marginRight: 16, fontSize: 24
             }}>U</div>
             <div>
-              <strong style={{ fontSize: 18, color: '#14181f' }}>UI Check Student</strong>
-              <p style={{ fontSize: 13, color: '#6b7482' }}>ui_mwh1k3x@exa...</p>
+              <strong style={{ fontSize: 18, color: 'var(--text)' }}>UI Check Student</strong>
+              <p style={{ fontSize: 13, color: 'var(--text-3)' }}>ui_mwh1k3x@exa...</p>
             </div>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
             <div>
-              <p style={{ fontSize: 13, color: '#4a5260', marginBottom: 4 }}>Mobile number</p>
-              <p style={{ fontSize: 14, color: '#14181f' }}>+919876543210</p>
+              <p style={{ fontSize: 13, color: 'var(--text-2)', marginBottom: 4 }}>Mobile number</p>
+              <p style={{ fontSize: 14, color: 'var(--text)' }}>+919876543210</p>
             </div>
             <div>
-              <p style={{ fontSize: 13, color: '#4a5260', marginBottom: 4 }}>Student ID</p>
-              <p style={{ fontSize: 14, color: '#6b7482' }}>Not added</p>
+              <p style={{ fontSize: 13, color: 'var(--text-2)', marginBottom: 4 }}>Student ID</p>
+              <p style={{ fontSize: 14, color: 'var(--text-3)' }}>Not added</p>
             </div>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
             <div>
-              <p style={{ fontSize: 13, color: '#4a5260', marginBottom: 4 }}>Department</p>
-              <p style={{ fontSize: 14, color: '#6b7482' }}>Not added</p>
+              <p style={{ fontSize: 13, color: 'var(--text-2)', marginBottom: 4 }}>Department</p>
+              <p style={{ fontSize: 14, color: 'var(--text-3)' }}>Not added</p>
             </div>
             <div>
-              <p style={{ fontSize: 13, color: '#4a5260', marginBottom: 4 }}>Academic year</p>
-              <p style={{ fontSize: 14, color: '#14181f' }}>2</p>
+              <p style={{ fontSize: 13, color: 'var(--text-2)', marginBottom: 4 }}>Academic year</p>
+              <p style={{ fontSize: 14, color: 'var(--text)' }}>2</p>
             </div>
           </div>
         </div>
@@ -55,7 +55,7 @@ export default function ProfilePage() {
         <button style={{
           width: '100%',
           padding: '8px 12px',
-          background: '#3b51d3',
+          background: 'var(--accent)',
           color: '#fff',
           border: 'none',
           borderRadius: 4,
