@@ -1,5 +1,5 @@
 import '../config/env.js';
-import { verifyAccessToken } from '../auth.js';
+import { verifyAccessToken } from '../modules/auth/auth.service.js';
 
 export function requireUser(req, res, next) {
   const header = req.headers.authorization || '';
