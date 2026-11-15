@@ -14,7 +14,7 @@ import { attachmentsRouter } from './modules/chat/attachments.routes.js';
 import { pool } from './db/pool.js';
 import { checkOllama } from './modules/ai/agent/ollama.client.js';
 
-const app = express();
+export const app = express();
 app.disable('x-powered-by');
 app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
 app.use(corsMiddleware);
@@ -44,13 +44,3 @@ app.get('/api/v1/health/full', async (_req, res) => {
 });
 
 app.use(errorHandler);
-
-const port = Number(process.env.PORT || 4000);
-const server = app.listen(port, '0.0.0.0', () => console.log(`CampusOS API listening on http://localhost:${port}`));
-async function shutdown() {
-  server.close();
-  await pool.end();
-  process.exit(0);
-}
-process.on('SIGINT', shutdown);
-process.on('SIGTERM', shutdown);

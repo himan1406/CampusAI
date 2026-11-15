@@ -4,9 +4,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "node --watch src/index.js",
-    "start": "node src/index.js",
-    "check": "node --check src/index.js && node --check src/auth.js && node --check src/auth-routes.js && node --check src/routes.js && node --check src/vault.js && node --check src/email-routes.js && node --check src/ollama.js && node --check src/lms-routes.js && node --check src/agentic-ai.js && node --check src/document-indexer.js && node --check src/chat-attachments.js"
+    "dev": "node --watch src/server.js",
+    "start": "node src/server.js",
+    "check": "node scripts/check-syntax.mjs",
+    "contract": "node scripts/contract-snapshot.mjs"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
