@@ -1,3 +1,5 @@
+import '../../config/env.js';
+
 const LMS_ORIGIN = new URL(process.env.LMS_BASE_URL || 'https://lms.bennett.edu.in').origin;
 const TOKEN_URL = `${LMS_ORIGIN}/login/token.php`;
 const REST_URL = `${LMS_ORIGIN}/webservice/rest/server.php`;

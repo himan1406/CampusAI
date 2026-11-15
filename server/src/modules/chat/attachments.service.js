@@ -1,3 +1,5 @@
+import '../../config/env.js';
+
 import crypto from 'node:crypto';
 import multer from 'multer';
 import JSZip from 'jszip';
