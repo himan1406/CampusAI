@@ -1,9 +1,9 @@
 import { Router } from 'express';
 import crypto from 'node:crypto';
 import { z } from 'zod';
-import { pool } from './db.js';
-import { requireUser } from './auth.js';
-import { encryptSecret, decryptSecret } from './vault.js';
+import { pool } from './db/pool.js';
+import { requireUser } from './middleware/require-user.js';
+import { encryptSecret, decryptSecret } from './lib/vault.js';
 import { indexTextDocuments } from './document-indexer.js';
 
 export const emailRouter = Router();

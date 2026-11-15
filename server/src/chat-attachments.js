@@ -2,8 +2,8 @@ import { Router } from 'express';
 import crypto from 'node:crypto';
 import multer from 'multer';
 import JSZip from 'jszip';
-import { pool } from './db.js';
-import { requireUser } from './auth.js';
+import { pool } from './db/pool.js';
+import { requireUser } from './middleware/require-user.js';
 import { extractDocumentText, indexTextDocuments, chunkText, decryptDocumentTitle } from './document-indexer.js';
 
 // Documents attached to a single chat conversation.

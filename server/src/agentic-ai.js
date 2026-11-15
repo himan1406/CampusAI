@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { pool } from './db.js';
-import { decryptSecret } from './vault.js';
+import { pool } from './db/pool.js';
+import { decryptSecret } from './lib/vault.js';
 import { decryptChunk, decryptDocumentTitle, embedQuery } from './document-indexer.js';
 
 const OLLAMA_URL = process.env.OLLAMA_URL || 'http://localhost:11434';

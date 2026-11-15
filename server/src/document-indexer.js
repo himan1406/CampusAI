@@ -2,8 +2,8 @@ import crypto from 'node:crypto';
 import pdfParse from 'pdf-parse/lib/pdf-parse.js';
 import mammoth from 'mammoth';
 import JSZip from 'jszip';
-import { pool } from './db.js';
-import { encryptSecret, decryptSecret } from './vault.js';
+import { pool } from './db/pool.js';
+import { encryptSecret, decryptSecret } from './lib/vault.js';
 
 const OLLAMA_URL = process.env.OLLAMA_URL || 'http://localhost:11434';
 const EMBED_MODEL = process.env.OLLAMA_EMBED_MODEL || 'nomic-embed-text';

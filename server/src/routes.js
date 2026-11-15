@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { z } from 'zod';
-import { pool, ensureDevUser } from './db.js';
-import { requireUser } from './auth.js';
+import { pool, ensureDevUser } from './db/pool.js';
+import { requireUser } from './middleware/require-user.js';
 import { buildSystemPrompt } from './ollama.js';
 import { runAgenticChat } from './agentic-ai.js';
 import { listSessionAttachments } from './chat-attachments.js';

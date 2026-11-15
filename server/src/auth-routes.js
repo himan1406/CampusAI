@@ -2,9 +2,10 @@ import { Router } from 'express';
 import crypto from 'node:crypto';
 import bcrypt from 'bcryptjs';
 import { z } from 'zod';
-import { pool } from './db.js';
-import { signAccessToken, requireUser } from './auth.js';
-import { encryptSecret } from './vault.js';
+import { pool } from './db/pool.js';
+import { signAccessToken } from './auth.js';
+import { requireUser } from './middleware/require-user.js';
+import { encryptSecret } from './lib/vault.js';
 
 export const authRouter = Router();
 const credentialsRouter = Router();
