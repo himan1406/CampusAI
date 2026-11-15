@@ -40,7 +40,7 @@ UPGRADE SAFELY
 
 Moodle course-content access depends on Bennett's API permissions. If core_course_get_contents is unavailable, courses and calendar remain available but course files cannot be indexed. Email attachments and OCR for scanned PDFs are not included.
 
-See README.md and docs/AGENTIC_RAG.md for details.
+See README.md and docs/features/AGENTIC_RAG.md for details.
 
 
 LOGIN VALIDATION

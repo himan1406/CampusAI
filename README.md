@@ -27,29 +27,34 @@ Sprint 6 builds on the working Sprint 5 website. Campus AI can now choose authen
 ## Project structure
 
 ```text
-CampusOS-Sprint6/
+CampusOS/
 ├── docker-compose.yml
+├── package.json                  # convenience scripts (npm --prefix)
 ├── README.md
-├── START_HERE.txt
 ├── docs/
-│   ├── ARCHITECTURE.md
-│   ├── AGENTIC_RAG.md
-│   ├── ILEARN_API.md
-│   └── lms-probe/
+│   ├── ARCHITECTURE.md           # tree + dependency rules
+│   ├── REFACTOR_MOVE_MAP.md      # old path -> new path
+│   ├── features/                 # AGENTIC_RAG.md, CHAT_ATTACHMENTS.md
+│   ├── integrations/             # ILEARN_API.md, lms-probe/
+│   └── history/                  # SPRINT6_CHANGELOG.md, START_HERE.txt
 ├── server/
 │   ├── .env.example
 │   ├── package.json
-│   ├── sql/001_init.sql ... 007_phone_number.sql
+│   ├── db/migrations/001_init.sql ... 008_chat_attachments.sql
+│   ├── scripts/                  # check-syntax, contract-snapshot, smoke-test
 │   └── src/
-│       ├── agentic-ai.js
-│       ├── document-indexer.js
-│       ├── lms-routes.js
-│       ├── email-routes.js
-│       ├── ollama.js
-│       └── ...
+│       ├── server.js             # entry: env, listen, graceful shutdown
+│       ├── app.js                # Express app: middleware, mounts, health
+│       ├── config/ db/ lib/ middleware/
+│       └── modules/              # auth, email, lms, chat, ai/{agent,tools,rag}
 └── web/
-    └── src/App.jsx, LmsPage.jsx, styles.css, ...
+    └── src/
+        ├── App.jsx               # auth gate + layout shell + page switch
+        ├── api/ lib/ components/ features/ styles/
+        └── main.jsx
 ```
+
+See `docs/ARCHITECTURE.md` for the full tree and the dependency rules between layers.
 
 ## Requirements
 
@@ -235,7 +240,7 @@ Course and email material search uses hybrid semantic + keyword retrieval when e
 
 ## Chat attachments (Sprint 6.1)
 
-Students can attach PDF, DOCX, PPTX, TXT, MD and CSV files to a Campus AI conversation (paperclip button or drag and drop). Files are scoped to that chat, encrypted, chunked and embedded like course material, and removed when the chat or attachment is deleted. See `docs/CHAT_ATTACHMENTS.md`.
+Students can attach PDF, DOCX, PPTX, TXT, MD and CSV files to a Campus AI conversation (paperclip button or drag and drop). Files are scoped to that chat, encrypted, chunked and embedded like course material, and removed when the chat or attachment is deleted. See `docs/features/CHAT_ATTACHMENTS.md`.
 
 To upgrade an existing install:
 
