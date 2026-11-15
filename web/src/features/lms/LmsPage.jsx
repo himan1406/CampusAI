@@ -1,33 +1,12 @@
 import React, { useMemo, useState } from 'react';
 import {
-  BookOpen, CalendarDays, CheckCircle2, ChevronLeft, ChevronRight,
-  ExternalLink, GraduationCap, LockKeyhole, RefreshCw, ShieldCheck,
-  Unplug, KeyRound, Clock3
+  BookOpen, CalendarDays, GraduationCap, LockKeyhole, RefreshCw,
+  ShieldCheck, Unplug, KeyRound
 } from 'lucide-react';
-
-function dateKey(date) {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
-}
-
-function eventDate(event) {
-  const stamp = Number(event.timestart || 0);
-  return stamp > 0 ? new Date(stamp * 1000) : null;
-}
-
-function formatDate(timestamp) {
-  const value = Number(timestamp || 0);
-  if (!value) return 'Not specified';
-  return new Date(value * 1000).toLocaleDateString(undefined, {
-    day: 'numeric', month: 'short', year: 'numeric'
-  });
-}
-
-function formatTime(date) {
-  return date ? date.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' }) : '';
-}
+import StatCard from '../../components/ui/StatCard.jsx';
+import CourseList from './CourseList.jsx';
+import CalendarView from './CalendarView.jsx';
+import { dateKey, eventDate } from './lms-utils.js';
 
 export default function LmsPage({ status, items = [], busy, onConnect, onSync, onDisconnect }) {
   const [username, setUsername] = useState('');
@@ -98,6 +77,12 @@ export default function LmsPage({ status, items = [], busy, onConnect, onSync, o
     setSelectedDay(dateKey(next));
   }
 
+  function selectToday() {
+    const today = new Date();
+    setMonth(new Date(today.getFullYear(), today.getMonth(), 1));
+    setSelectedDay(dateKey(today));
+  }
+
   return <>
     <section className="page-heading">
       <div>
@@ -153,18 +138,8 @@ export default function LmsPage({ status, items = [], busy, onConnect, onSync, o
 
     {connected && <>
       <section className="lms-summary-grid lms-two-stats">
-        <div className="stat-card">
-          <div className="stat-icon blue"><BookOpen size={18}/></div>
-          <span>Enrolled courses</span>
-          <strong>{account?.course_count ?? courses.length}</strong>
-          <small>Returned by Moodle for your account</small>
-        </div>
-        <div className="stat-card">
-          <div className="stat-icon amber"><CalendarDays size={18}/></div>
-          <span>Calendar events</span>
-          <strong>{account?.calendar_count ?? events.length}</strong>
-          <small>Past 30 days and next 365 days</small>
-        </div>
+        <StatCard size={18} icon={BookOpen} iconClassName="stat-icon blue" label="Enrolled courses" value={account?.course_count ?? courses.length} hint="Returned by Moodle for your account"/>
+        <StatCard size={18} icon={CalendarDays} iconClassName="stat-icon amber" label="Calendar events" value={account?.calendar_count ?? events.length} hint="Past 30 days and next 365 days"/>
       </section>
 
       <div className="lms-account-bar">
@@ -185,75 +160,20 @@ export default function LmsPage({ status, items = [], busy, onConnect, onSync, o
           <button className={tab === 'calendar' ? 'active' : ''} onClick={() => setTab('calendar')}><CalendarDays size={14}/> Calendar</button>
         </div>
 
-        {tab === 'courses' && <>
-          <div className="lms-library-top lms-course-toolbar">
-            <div><h2>My courses</h2><p>{courses.length} courses synchronized from your enrolments.</p></div>
-            <input className="lms-search" value={courseSearch} onChange={event => setCourseSearch(event.target.value)} placeholder="Search your courses…"/>
-          </div>
-          <div className="lms-course-grid">
-            {courses.length ? courses.map(course => <article className="lms-course-card" key={course.id}>
-              <div className="lms-course-card-icon"><BookOpen size={19}/></div>
-              <div className="lms-course-card-body">
-                <h3>{course.title}</h3>
-                <span>{course.metadata?.shortname || course.metadata?.idnumber || 'BennettTech course'}</span>
-                {course.content_text && <p>{course.content_text.slice(0, 240)}{course.content_text.length > 240 ? '…' : ''}</p>}
-                <div className="lms-course-dates">
-                  {Number(course.startdate) > 0 && <span>Starts {formatDate(course.startdate)}</span>}
-                  {Number(course.enddate) > 0 && <span>Ends {formatDate(course.enddate)}</span>}
-                </div>
-                <a href={course.source_url} target="_blank" rel="noreferrer">Open course in iLearn <ExternalLink size={13}/></a>
-              </div>
-            </article>) : <div className="lms-empty"><BookOpen size={27}/><strong>No courses found</strong><p>Run Sync iLearn to retrieve your enrolled courses. If the list is empty, check whether the Moodle token can access the enrolment service.</p></div>}
-          </div>
-        </>}
+        {tab === 'courses' && <CourseList courses={courses} courseSearch={courseSearch} onCourseSearchChange={setCourseSearch}/>}
 
-        {tab === 'calendar' && <>
-          <div className="lms-calendar-toolbar">
-            <div><h2>iLearn calendar</h2><p>Events returned by the Moodle calendar service.</p></div>
-            <div className="lms-calendar-nav">
-              <button className="secondary-btn" onClick={() => changeMonth(-1)} aria-label="Previous month"><ChevronLeft size={16}/></button>
-              <strong>{monthLabel}</strong>
-              <button className="secondary-btn" onClick={() => changeMonth(1)} aria-label="Next month"><ChevronRight size={16}/></button>
-              <button className="text-link" onClick={() => { const today = new Date(); setMonth(new Date(today.getFullYear(), today.getMonth(), 1)); setSelectedDay(dateKey(today)); }}>Today</button>
-            </div>
-          </div>
-          <div className="lms-calendar-grid">
-            {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => <div className="lms-calendar-weekday" key={day}>{day}</div>)}
-            {calendarDays.map(day => {
-              const key = dateKey(day);
-              const dayEvents = eventsByDay.get(key) || [];
-              const inMonth = day.getMonth() === month.getMonth();
-              return <button
-                type="button"
-                key={key}
-                className={`lms-calendar-day ${inMonth ? '' : 'outside'} ${selectedDay === key ? 'selected' : ''} ${key === dateKey(new Date()) ? 'today' : ''}`}
-                onClick={() => setSelectedDay(key)}
-              >
-                <span className="lms-day-number">{day.getDate()}</span>
-                {dayEvents.slice(0, 2).map(event => <span className="lms-day-event" key={event.id}>{event.title}</span>)}
-                {dayEvents.length > 2 && <span className="lms-day-more">+{dayEvents.length - 2} more</span>}
-              </button>;
-            })}
-          </div>
-          <div className="lms-selected-events">
-            <div className="lms-selected-events-head">
-              <div><h3>{new Date(`${selectedDay}T00:00:00`).toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long' })}</h3><p>{selectedEvents.length} events</p></div>
-            </div>
-            {selectedEvents.length ? selectedEvents.map(event => {
-              const date = eventDate(event);
-              return <article className="lms-event-row" key={event.id}>
-                <div className="lms-event-time"><Clock3 size={14}/><span>{formatTime(date)}</span></div>
-                <div className="lms-event-copy">
-                  <strong>{event.title}</strong>
-                  <span>{event.course_name || 'iLearn calendar'}</span>
-                  {event.content_text && <p>{event.content_text.slice(0, 220)}</p>}
-                  <a href={event.source_url} target="_blank" rel="noreferrer">Open in iLearn <ExternalLink size={12}/></a>
-                </div>
-              </article>;
-            }) : <div className="lms-empty lms-empty-compact"><CalendarDays size={24}/><strong>No events on this date</strong><p>Choose another date or sync iLearn again.</p></div>}
-          </div>
-          {!events.length && <div className="lms-empty"><CalendarDays size={27}/><strong>No calendar events returned</strong><p>The Moodle calendar service may not have returned events for the selected range, or the account may not have visible events.</p></div>}
-        </>}
+        {tab === 'calendar' && <CalendarView
+          events={events}
+          month={month}
+          monthLabel={monthLabel}
+          calendarDays={calendarDays}
+          eventsByDay={eventsByDay}
+          selectedDay={selectedDay}
+          selectedEvents={selectedEvents}
+          onChangeMonth={changeMonth}
+          onSelectDay={setSelectedDay}
+          onToday={selectToday}
+        />}
       </section>
     </>}
 

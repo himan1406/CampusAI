@@ -26,7 +26,7 @@ const usedClasses = new Set();
 for (const file of jsxFiles) {
   const content = await readFile(file, 'utf8');
   // Match className="..." and className='...' and template literals
-  const staticMatches = content.matchAll(/className=["']([^"']+)["']/g);
+  const staticMatches = content.matchAll(/[A-Za-z]*[Cc]lassName=["']([^"']+)["']/g);
   for (const match of staticMatches) {
     for (const cls of match[1].split(/\s+/)) {
       const clean = cls.trim();
