@@ -1,42 +1,14 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import LmsPage from './LmsPage.jsx';
+import { API, request } from './api/client.js';
+import { normalizeIndianPhone } from './lib/phone.js';
+import { ATTACH_EXTENSIONS, ATTACH_MAX_MB, ATTACH_MAX_FILES } from './lib/attachments.js';
 import {
   ArrowRight, Bell, BookOpen, Bot, CalendarDays, Check, ChevronDown, CircleHelp, Home,
   ExternalLink, GraduationCap, Inbox, Link2, LoaderCircle, LogOut, Mail,
   Menu, MessageSquare, Plus, RefreshCw, Search, Send, Settings, ShieldCheck,
   Paperclip, FileText, UserRound, X
 } from 'lucide-react';
-
-const API = import.meta.env.VITE_API_URL || 'http://localhost:4000/api/v1';
-
-async function request(path, options = {}, token = null) {
-  const headers = { ...(options.body && !(options.body instanceof FormData) ? { 'Content-Type': 'application/json' } : {}), ...(options.headers || {}) };
-  if (token) headers.Authorization = `Bearer ${token}`;
-  const response = await fetch(`${API}${path}`, {
-    ...options,
-    headers,
-    credentials: 'include'
-  });
-  if (response.status === 204) return null;
-  const payload = await response.json().catch(() => ({}));
-  if (!response.ok) {
-    const apiError = payload.error;
-    const fieldMessage = apiError?.fieldErrors ? Object.values(apiError.fieldErrors).flat().find(Boolean) : null;
-    const message = typeof apiError === 'string' ? apiError : apiError?.message || fieldMessage || apiError?.formErrors?.[0] || `Request failed (${response.status})`;
-    const error = new Error(message); error.status = response.status; throw error;
-  }
-  return payload;
-}
-
-const ATTACH_EXTENSIONS = ['pdf', 'docx', 'pptx', 'txt', 'md', 'csv'];
-const ATTACH_MAX_MB = 12;
-const ATTACH_MAX_FILES = 3;
-
-function normalizeIndianPhone(value) {
-  const digits = String(value || '').replace(/\D/g, '');
-  const localNumber = digits.length === 12 && digits.startsWith('91') ? digits.slice(2) : digits;
-  return /^[6-9]\d{9}$/.test(localNumber) ? `+91${localNumber}` : '';
-}
 
 function AuthScreen({ onAuthenticated }) {
   const [mode, setMode] = useState('login');
