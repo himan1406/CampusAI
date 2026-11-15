@@ -1,0 +1,50 @@
+CAMPUSOS SPRINT 6 — AGENTIC RAG (WEB ONLY)
+
+This release adds context-aware Ollama tool calling, iLearn course-resource indexing, hybrid RAG search, inbox retrieval, source references and visible tool activity.
+
+UPGRADE SAFELY
+1. Stop Sprint 5 backend/frontend terminals.
+2. In the old Sprint 5 folder run: docker compose down
+   IMPORTANT: do NOT use docker compose down -v. The existing PostgreSQL volume is reused.
+3. Extract Sprint 6 into a new folder.
+4. Copy Sprint 5 server/.env into Sprint 6 server/.env. Preserve JWT_ACCESS_SECRET, CREDENTIAL_ENCRYPTION_KEY, DATABASE_URL, OAuth settings and LMS settings.
+5. Add to server/.env:
+   OLLAMA_EMBED_MODEL=nomic-embed-text
+   AI_MAX_TOOL_ROUNDS=6
+   AI_MAX_TOOL_CALLS=8
+   RAG_CHUNK_SIZE=1600
+   RAG_CHUNK_OVERLAP=250
+   LMS_CONTENT_SYNC=true
+   LMS_MAX_COURSES_FOR_CONTENTS=30
+   LMS_MAX_FILES_PER_SYNC=40
+   LMS_MAX_FILE_MB=12
+6. Run: ollama pull nomic-embed-text
+   If needed: ollama pull qwen2.5:3b
+7. From Sprint 6 root:
+   docker compose up -d db
+8. Apply the new migrations (006 and 007):
+   docker compose exec -T db psql -v ON_ERROR_STOP=1 -U campusos -d campusos -f /docker-entrypoint-initdb.d/006_agentic_rag.sql
+   docker compose exec -T db psql -v ON_ERROR_STOP=1 -U campusos -d campusos -f /docker-entrypoint-initdb.d/007_phone_number.sql
+9. Backend terminal:
+   cd server
+   npm install
+   npm run check
+   npm run dev
+10. Frontend terminal:
+    cd web
+    npm install
+    npm run dev
+11. Open http://localhost:5173 and sign in with your CampusOS account using a valid email and Indian mobile number. Existing accounts save the number on their first successful login after migration 007.
+12. Re-sync iLearn to index course content. Re-sync Gmail/Outlook from Connections to index emails.
+13. Open Campus AI. It now chooses tools based on the question and displays tool activity and sources.
+
+Moodle course-content access depends on Bennett's API permissions. If core_course_get_contents is unavailable, courses and calendar remain available but course files cannot be indexed. Email attachments and OCR for scanned PDFs are not included.
+
+See README.md and docs/AGENTIC_RAG.md for details.
+
+
+LOGIN VALIDATION
+- Email is checked by the browser and backend.
+- Mobile number must be a 10-digit Indian number starting with 6–9; +91 is accepted.
+- Existing accounts with no saved mobile number register the supplied number on their first successful login.
+- Mobile numbers are format-checked, not SMS/OTP verified.

@@ -1,0 +1,26 @@
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    container_name: campusos-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: campusos
+      POSTGRES_PASSWORD: campusos_dev_password
+      POSTGRES_DB: campusos
+    ports:
+      - "5433:5432"
+    volumes:
+      - campusos_pgdata:/var/lib/postgresql/data
+      - ./server/sql/001_init.sql:/docker-entrypoint-initdb.d/001_init.sql:ro
+      - ./server/sql/002_auth_and_credentials.sql:/docker-entrypoint-initdb.d/002_auth_and_credentials.sql:ro
+      - ./server/sql/003_email_integrations.sql:/docker-entrypoint-initdb.d/003_email_integrations.sql:ro
+      - ./server/sql/004_lms_scraping.sql:/docker-entrypoint-initdb.d/004_lms_scraping.sql:ro
+      - ./server/sql/005_ilearn_moodle_api.sql:/docker-entrypoint-initdb.d/005_ilearn_moodle_api.sql:ro
+      - ./server/sql/006_agentic_rag.sql:/docker-entrypoint-initdb.d/006_agentic_rag.sql:ro
+      - ./server/sql/007_phone_number.sql:/docker-entrypoint-initdb.d/007_phone_number.sql:ro
+      - ./server/sql/008_chat_attachments.sql:/docker-entrypoint-initdb.d/008_chat_attachments.sql:ro
+
+volumes:
+  campusos_pgdata:
+    # Matches the named volume created when the previous project folder was named CampusOS.
+    name: campusos_campusos_pgdata

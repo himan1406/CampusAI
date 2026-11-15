@@ -1,0 +1,11 @@
+node_modules/
+.env
+.env.*
+!.env.example
+web/dist/
+desktop/dist/
+mobile/.expo/
+mobile/android/
+mobile/ios/
+.DS_Store
+*.log
