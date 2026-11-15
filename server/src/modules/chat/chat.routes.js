@@ -1,10 +1,10 @@
 import { Router } from 'express';
 import { z } from 'zod';
-import { pool, ensureDevUser } from './db/pool.js';
-import { requireUser } from './middleware/require-user.js';
-import { buildSystemPrompt } from './modules/ai/agent/system-prompt.js';
-import { runAgenticChat } from './modules/ai/agent/orchestrator.js';
-import { listSessionAttachments } from './chat-attachments.js';
+import { pool, ensureDevUser } from '../../db/pool.js';
+import { requireUser } from '../../middleware/require-user.js';
+import { buildSystemPrompt } from '../ai/agent/system-prompt.js';
+import { runAgenticChat } from '../ai/agent/orchestrator.js';
+import { listSessionAttachments } from './attachments.service.js';
 
 export const router = Router();
 router.use(requireUser);

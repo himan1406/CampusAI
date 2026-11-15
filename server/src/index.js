@@ -5,12 +5,12 @@ import cookieParser from 'cookie-parser';
 import { corsMiddleware } from './middleware/cors.js';
 import { authLimiter, emailLimiter, lmsLimiter, aiLimiter, uploadLimiter } from './middleware/rate-limiters.js';
 import { errorHandler } from './middleware/error-handler.js';
-import { router } from './routes.js';
+import { router } from './modules/chat/chat.routes.js';
 import { authRouter } from './modules/auth/auth.routes.js';
 import { credentialsRouter } from './modules/auth/credentials.routes.js';
 import { emailRouter } from './modules/email/email.routes.js';
 import { lmsRouter } from './modules/lms/lms.routes.js';
-import { attachmentsRouter } from './chat-attachments.js';
+import { attachmentsRouter } from './modules/chat/attachments.routes.js';
 import { pool } from './db/pool.js';
 import { checkOllama } from './modules/ai/agent/ollama.client.js';
 
